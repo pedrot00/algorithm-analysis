@@ -184,32 +184,96 @@ int f3() {
 		for(int j=0;j<m;j++)     //O(m)
 			ans += busca(v,m,k);    //O(m) //op.basica
 }
+
 //--------------------------    // fun4_slide3
+//O(n)
 int busca4(int v[],int n, int k) {
-	for(int i=0;i<n;i++) 
+	for(int i=0;i<n;i++)             //O(n)
 		if(v[i]==k) return i;
 	return -1;
 }
 
+//O(n^2)
 int funcao3(int v[],int n) {
     
 	int ct = 0;
-	for(int i=0;i<n;i++)
-		for(int j=0;j<n;j++)
+	for(int i=0;i<n;i++)        //O(n)
+		for(int j=0;j<n;j++)      //O(n)
 			ct+=v[j];
 	return ct;
 }
 
+//O(n) * O(m * m) + O(n* n^2) = O(nm^2 + n^3)
+//pior caso => O(n^3)
 int f4() {
     int v[] = {2,3,4,5}, n, k, m;
     int ans=0;
-	for(int i=0;i<n;i++) {
-		for(int j=0;j<m;j++)
-			ans += busca(v,m,k);
-	funcao2(v,n);
+	for(int i=0;i<n;i++) {      //O(n)
+		for(int j=0;j<m;j++)    //O(m)  
+			ans += busca(v,m,k);     //O(m)  
+	funcao2(v,n);                    //O(n^2)  
+} 
+}
+//--------------------------    // fun5_slide3          // REVISAR!!
+//O(n) * O(n -i-1) = O(n^2)
+bool todosIguais(int v[], int n) {
+	for(int i=0;i<n;i++)        //0(n)
+		for(int j=i+1;j<n;j++)  //O(n-i-1)
+			if(v[i]==v[j]) return false;
+	return true;
+}
+//--------------------------     // fun6_slide3  
+//O(n^3)
+int matrixMult(int **a, int **b, int **c, int n) { //suponha que n>0
+	for(int i=0;i<n;i++)            //O(n)
+		for(int j=0;j<n;j++) {      //O(n)
+			int resp = 0;
+			for(int k=0;k<n;k++)    //O(n)
+				resp += a[i][k]*b[k][j];        //O(1)
+			c[i][j] = resp;         //O(1)
+		}
+}
+
+//--------------------------     // fun7_slide3  
+//O(n/2) * O(n/2) * O(1) = O(n^2)
+double f(int n) {
+    double  x = 0;
+    for(int i=0;i<n/2;i++)      //O(n/2)
+       for(int j= n/2; j>=0;j--)     //O(n/2)
+            x+= log(2*i*j);           //O(1)
+        return x;
+}
+
+//--------------------------     // fun8_slide3  
+// O(n) * O(n) + O(n/2) *O(n/2) = O(n^2) + O(n^2/4) = O(n^2)
+double f(int n) {
+	double ans = 0;
+	for(int i=0;i<n;i++) {      //O(n)
+		for(int j=0;j<n;j++)    //O(n)
+			ans -= log(i*j);       //O(1)
+		ans += log(n+i);             //O(1)
+		for(int j2=0;j2<n/2;j2++)   //O(n/2)
+			for(int k=0;k<n/2;k++)  //O(n/2)
+				ans += log(j2*k);   //O(1)
+	}
+	return ans;
+} 
+//--------------------------     // fun9_slide3  
+//O(n^2) + O(n^2/4) = O(n^2)
+double f(int n) {
+	double ans = 0;
+	for(int i=0;i<n;i++) {          //O(n)
+		for(int j=0;j<n;j++)        //O(n)
+			ans -= log(i*j);
+		ans += log(n+i);
+		for(int j2=0;j2<n/2;j2++)      //O(n/2)
+			for(int k=n/2;k<n;k++)      //O(n - n/2) = O(n/2)
+				ans += log(j2*k); 
+	}
+	return ans;
 } 
 //--------------------------
-}
+
 
 int main(){
 
