@@ -56,7 +56,7 @@ void merge(int *v, int p, int q, int r) {
     int cursor = 0;
 
     while(it1 < q && it2 < r) {
-        if(v[it1] < v[it2]) {
+        if(v[it1] <= v[it2]) {
             aux[cursor++] = v[it1++];
         }
         else {
@@ -74,23 +74,52 @@ void merge(int *v, int p, int q, int r) {
     for(int i = 0; i < n; i++) {
         v[p+i] = aux[i];
     }
-
     delete[] aux;
 }
 
 // Merge Sort principal
-void mergeSort(int *v, int p, int r) {
-    if (r - p > 1) {
-        int q = (p + r) / 2;
-        mergeSort(v, p, q);
-        mergeSort(v, q, r);
-        merge(v, p, q, r);
-    }
+void mergeSort(int *v, int p, int r){
+    int n = r-p;
+    if (n >1){
+        int meio = (p+r)/2;
+        mergeSort(v,p, meio);
+        mergeSort(v,meio, r);
+        merge(v, p, meio, r);
+    }  
 }
 
 // Wrapper para interface uniforme
 void mergeSortWrapper(int *v, int n) {
     mergeSort(v, 0, n);
+}
+
+// Funções do Quick Sort
+int particiona(int *v, int posPivo, int beg, int end){
+    int posUltima = end-1;
+    swap(v[posPivo], v[posUltima]);
+    int posInserir = beg;
+    
+    for(int i=beg; i <posUltima; i++){
+        if(v[i] < v[posUltima]){
+            swap(v[i], v[posInserir++]);
+        }
+    }
+    swap(v[posUltima], v[posInserir]);
+    return posInserir;
+}
+
+void quickSort(int *v, int beg, int end){
+    if(beg >= end -1) return;
+
+    int pivo = (end-beg)/2 + beg;
+    int novo = particiona(v, pivo, beg, end);
+
+    quickSort(v, beg, novo);
+    quickSort(v, novo+1, end);
+}
+
+void quickSortWrapper(int *v, int n){
+    quickSort(v,0,n);
 }
 
 // ===== GERADOR DE ARRAY ALEATÓRIO =====
@@ -106,7 +135,7 @@ void generateRandomArray(int *arr, int size, int maxVal) {
 // ===== FORMATA O TEMPO EM SEGUNDOS (0,0000s) =====
 string formatTime(double seconds) {
     stringstream ss;
-    ss << fixed << setprecision(4) << seconds;
+    ss << fixed << setprecision(5) << seconds;
     string timeStr = ss.str();
     replace(timeStr.begin(), timeStr.end(), '.', ',');
     return timeStr + " segundos";
@@ -124,7 +153,7 @@ double measureTime(void (*sortFunc)(int*, int), int *arr, int size) {
 int main(int argc, char *argv[]) {
     if (argc != 4) {
         cout << "Uso: " << argv[0] << " [MODO] [TAMANHO] [MAX_VAL]\n";
-        cout << "Modos:\n0 -> Todos\n1 -> Bubble\n2 -> Selection\n3 -> Insertion\n4 -> Merge\n";
+        cout << "Modos:\n0 -> Todos\n1 -> Bubble\n2 -> Selection\n3 -> Insertion\n4 -> Merge\n5 -> Quick\n";
         return 1;
     }
 
@@ -164,9 +193,14 @@ int main(int argc, char *argv[]) {
         double mergeTime = measureTime(mergeSortWrapper, arr, size);
         cout << "Merge Sort: " << formatTime(mergeTime) << "\n";
 
+        // Quick Sort
+        copy(originalArr, originalArr + size, arr);
+        double quickTime = measureTime(quickSortWrapper, arr, size);
+        cout << "Quick Sort: " << formatTime(quickTime) << "\n";
+
         delete[] arr;
     }
-    // --- Modo 1/2/3/4: Apenas um algoritmo ---
+    // --- Modo 1/2/3/4/5: Apenas um algoritmo ---
     else {
         int *arr = new int[size];
         copy(originalArr, originalArr + size, arr);
@@ -191,8 +225,12 @@ int main(int argc, char *argv[]) {
                 algoName = "Merge Sort";
                 time = measureTime(mergeSortWrapper, arr, size);
                 break;
+            case 5:
+                algoName = "Quick Sort";
+                time = measureTime(quickSortWrapper, arr, size);
+                break;
             default:
-                cout << "Modo invalido! Use 0-4.\n";
+                cout << "Modo invalido! Use 0-5.\n";
                 return 1;
         }
 
