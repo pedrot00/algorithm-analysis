@@ -51,6 +51,8 @@ public:
 
 	bool empty() const {return size() == 0;};
 	int size() const {return dataSize;};
+	int eraseMatchingElements(const T& elem);
+	void sortedInsert(const T& elem);
 
 
 private:
@@ -61,7 +63,7 @@ private:
 	void create();
 	void destroy();
 	void resizeCapacity(int newCapacity);
-	int eraseMatchingElements(const T& elem) 
+	
 };
 
 template<class T>
@@ -131,6 +133,7 @@ void MyVec<T>::resizeCapacity(int newCapacity) {
 	}
 	delete[] data;
 	data = newData;
+	//delete[] new data -> talvez precise fazer isso
 }
 
 template<class T>
@@ -217,7 +220,48 @@ Sua implementação deverá ser o mais eficiente possível.
 
 template<class T>
 int MyVec<T>::eraseMatchingElements(const T& elem) {
+	int removedCont = 0;
+	int tamanho = 0;
 
+	// se o elemento n for igual ao passado por parametro ele escreve data[0] = data[i]
+	//aumentando o valor de 0, no final esse valor tamanho sera nosso novo tamanho do vetor
+	//a capacidade mantem a mesma n precisa realocar
+	for(int i=0; i<dataSize; i++){
+		if(data[i]!=elem){
+			data[tamanho++] = data[i];
+		}
+		else{
+			removedCont++;
+		}
+	}
+	dataSize = tamanho;
+	return removedCont;
 }
 
+template <class T>
+void MyVec<T>::sortedInsert(const T& elem){
+	if(dataSize == 0){	//p caso o vetor esteja vazio // deveria ser dataSize ou dataCapacity?
+		resizeCapacity(1);	
+	}
+	else if(dataSize == dataCapacity){	//p caso o vetor esteja cheio
+		resizeCapacity(dataCapacity*2);
+	}
+
+	// p acharmos a posicao onde inserir o elemento de forma mais eficiente
+	int beg = 0, end = dataSize;
+	while(beg < end){
+		int meio = beg + (end - beg)/2 ;
+		if(data[meio] < elem){
+			beg = meio + 1;
+		}
+		else{
+			end = meio;
+		}
+	}
+	for(int i=dataSize-1; i>=beg; i--){
+		data[i+1] = data[i];
+	}
+	data[beg] = elem;
+	dataSize++;
+}
 #endif
