@@ -1,20 +1,28 @@
 #include <iostream>
 #include <cassert>
 
+// Declaração antecipada do template operator<<
+template <typename T>
+class MyVec;
+
+template <typename T>
+std::ostream& operator<<(std::ostream& os, const MyVec<T>& vec);
+
 template <class T>
 class MyVec {
 public:
-    friend std::ostream& operator<<(std::ostream& os, const MyVec<T>& vec);
+    // Correção aqui: uso de <> para indicar que é uma função template
+    friend std::ostream& operator<< <>(std::ostream& os, const MyVec<T>& vec);
 
-    T &operator[](int pos);  // Passagem de valor e leitura
-    const T& operator[](int pos) const; // Para vetores constantes
+    T &operator[](int pos);
+    const T& operator[](int pos) const;
 
     void push_back(const T&);
     void pop_back() { assert(dataSize != 0); dataSize--; }
 
-    MyVec(int n, const T& init = T());  // Construtor com inicialização
-    MyVec();  // Construtor padrão
-    ~MyVec();  // Destruidor
+    MyVec(int n, const T& init = T());
+    MyVec();
+    ~MyVec();
 
     int size() const;
     void resize(int newCapacity, const T& fill = T());
@@ -29,6 +37,7 @@ private:
     void resizeCapacity(int newCapacity);
 };
 
+// Definição do operador <<
 template <class T>
 std::ostream& operator<<(std::ostream& os, const MyVec<T>& vec) {
     os << "[ ";
@@ -50,7 +59,20 @@ const T& MyVec<T>::operator[](int pos) const {
 }
 
 template <class T>
-MyVec<T>::MyVec() : data(nullptr), dataSize(0), dataCapacity(0) {}
+MyVec<T>::MyVec() {
+    create();
+}
+
+template <class T>
+void MyVec<T>::create() {
+    data = nullptr;
+    dataSize = dataCapacity = 0;
+}
+
+template <class T>
+void MyVec<T>::destroy() {
+    delete[] data;
+}
 
 template <class T>
 MyVec<T>::MyVec(int n, const T& init) : data(new T[n]), dataSize(n), dataCapacity(n) {
@@ -90,17 +112,6 @@ void MyVec<T>::resize(int newCapacity, const T& fill) {
 }
 
 template <class T>
-void MyVec<T>::create() {
-    data = nullptr;
-    dataSize = dataCapacity = 0;
-}
-
-template <class T>
-void MyVec<T>::destroy() {
-    delete[] data;
-}
-
-template <class T>
 void MyVec<T>::resizeCapacity(int newCapacity) {
     dataCapacity = newCapacity;
     T* newData = new T[dataCapacity];
@@ -117,9 +128,9 @@ template <class T>
 void MyVec<T>::push_back(const T& elem) {
     if (size() == dataCapacity) {
         if (dataCapacity == 0) {
-            resizeCapacity(1);  // Se a capacidade for 0, define o tamanho inicial como 1
+            resizeCapacity(1);
         } else {
-            resizeCapacity(dataCapacity * 2);  // Caso contrário, dobra a capacidade
+            resizeCapacity(dataCapacity * 2);
         }
     }
     data[dataSize] = elem;

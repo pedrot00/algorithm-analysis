@@ -1,0 +1,18 @@
+//implemente esta funcao
+//Ela deve redimensionar o vetor de modo que ele tenha capacidade newCapacity
+//Se newCapacity for menor do que a capacidade atual voce devera ignorar a chamada a esta funcao (i.e., nunca reduziremos a capacidade do vetor)
+//Nao se esqueca de liberar (deletar) a memoria que nao for mais necessaria (para evitar vazamentos de memoria)
+//Exemplo de execucao:
+//data=[1,2,3,,], dataSize=3, dataCapacity=5 (vetor de capacidade 5, com 3 elementos ocupados)
+//se chamarmos resizeCapacity(10), os membros de dados deverao ter os seguintes valores:
+//data=[1,2,3,,,,,,,], dataSize=3, dataCapacity=10
+
+
+//implemente esta funcao
+//Ela deve redimensionar o vetor de modo que ele tenha capacidade newCapacity
+//Se newCapacity for menor do que a capacidade atual voce devera ignorar a chamada a esta funcao (i.e., nunca reduziremos a capacidade do vetor)
+//Nao se esqueca de liberar (deletar) a memoria que nao for mais necessaria (para evitar vazamentos de memoria)
+//Exemplo de execucao:
+//data=[1,2,3,,], dataSize=3, dataCapacity=5 (vetor de capacidade 5, com 3 elementos ocupados)
+//se chamarmos resizeCapacity(10), os membros de dados deverao ter os seguintes valores:
+//data=[1,2,3,,,,,,,], dataSize=3, dataCapacity=10

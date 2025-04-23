@@ -39,5 +39,44 @@ void exemplo(){
     Array<int> a; // cria array de inteiros usando template
     Array<char> b; // cria array de char usando template
     // ...
+} 
+
+*/
+/*
+#include<iostream>
+#include "MyVec.h"
+using namespace std;
+
+int main() {
+    MyVec<int> v;
+
+    std::cout << "Inserindo elementos...\n";
+    for (int i = 1; i <= 5; ++i) {
+        v.push_back(i * 10);
+        std::cout << v << "\n";
+    }
+
+    std::cout << "\nRemovendo um elemento com pop_back:\n";
+    v.pop_back();
+    std::cout << v << "\n";
+
+    std::cout << "\nRedimensionando com fill (resize(8, 99)):\n";
+    v.resize(8, 99);
+    std::cout << v << "\n";
+
+    std::cout << "\nRedimensionando para menor (resize(3)):\n";
+    v.resize(3);
+    std::cout << v << "\n";
+
+    std::cout << "\nCriando vetor inicializado com 4 elementos 7:\n";
+    MyVec<int> w(4, 7);
+    std::cout << w << "\n";
+
+    std::cout << "\nAcessando elementos com operador []:\n";
+    for (int i = 0; i < w.size(); ++i) {
+        std::cout << "w[" << i << "] = " << w[i] << "\n";
+    }
+
+    return 0;
 }
 */
