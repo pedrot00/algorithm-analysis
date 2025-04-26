@@ -16,9 +16,9 @@ private:
 
 public:
     // ---------------- Construtores e destrutor ---------
-    /*ok */ MyList(T val);                           //construtor com valor inicial
-    /*ok */ MyList();                                //construtor padrao
-    /*ok */ ~MyList(){clear();}                      //destrutor
+    /*ok */ MyList(T val);                           // construtor com valor inicial
+    /*ok */ MyList();                                // construtor padrao
+    /*ok */ ~MyList(){clear();}                      // destrutor
     /*ok */ void clear();                            // limpa a lista
     
     // ---------------- Inserir e Remover ----------------
@@ -27,7 +27,7 @@ public:
     /*ok */ void pop_back();                         // remove elemento do final
     /*ok */ void insert(T val, int pos);             // insere elemento em posição específica
 
-    //  ---------------- Impressoes ----------------
+    //  ---------------- Impressoes ---------------------
     /*ok */ void imprimir();                         // imprime lista iterativamente
     /*ok */ void imprimirRecursivo(Node<T>* ptr);    // imprime lista recursivamente (ajudante)
     /*ok */ void imprimirRecursivo();                // imprime lista recursivamente (público)
