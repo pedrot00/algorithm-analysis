@@ -15,23 +15,26 @@ private:
     int dataSize = 0;
 
 public:
+    // ---------------- Construtores e destrutor ---------
     /*ok */ MyList(T val);                           //construtor com valor inicial
     /*ok */ MyList();                                //construtor padrao
     /*ok */ ~MyList(){clear();}                      //destrutor
     /*ok */ void clear();                            // limpa a lista
-        
+    
+    // ---------------- Inserir e Remover ----------------
     /*ok */ void push_back(T val);                   // insere elemento no final
     /*ok */ void push_front(T val);                  // insere elemento no início
     /*ok */ void pop_back();                         // remove elemento do final
     /*ok */ void insert(T val, int pos);             // insere elemento em posição específica
 
+    //  ---------------- Impressoes ----------------
     /*ok */ void imprimir();                         // imprime lista iterativamente
     /*ok */ void imprimirRecursivo(Node<T>* ptr);    // imprime lista recursivamente (ajudante)
     /*ok */ void imprimirRecursivo();                // imprime lista recursivamente (público)
     /*ok */ void imprimirInverso(Node<T> *ptr);      // imprime inversamente (ajudante)
     /*ok */ void imprimirInverso();                  // imprime inversamente (público)
 
-    // ---------------- Funçoes importantes ----------------
+    // ---------------- Funcoes importantes --------------
     /*ok */ int size() const;                        // retorna o tamanho da lista
     /*ok */ bool empty();                            // verifica se a lista está vazia
     /*ok */ void copy(Node<T>* other);               // copia outra lista
@@ -148,7 +151,7 @@ void MyList<T>::insert(T val, int pos){
     }
 }
 
-//  ---------------- Impressões ----------------
+//  ---------------- Impressoes ----------------
 template<class T>
 void MyList<T>::imprimir(){
     if(dataSize == 0)return;
@@ -186,7 +189,7 @@ void MyList<T>::imprimirInverso(){
     imprimirInverso(head);
 }
 
-// ---------------- Funções importantes ----------------
+// ---------------- Funcoes importantes ----------------
 template<class T>
 int MyList<T>::size() const{
     return dataSize;
