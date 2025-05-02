@@ -11,8 +11,6 @@ class Node{
         Node(const T& elem): data(elem), next(nullptr){}
 };
 
-
-
 template <class T>
 class MyList{
 private:
