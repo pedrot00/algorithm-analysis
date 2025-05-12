@@ -1,146 +1,122 @@
-#include<iostream>
+#include <iostream>
 
-// declaration forward
-template<class T> class Node;
-template<class T> class MyList;
 template<class T> class MyListIterator;
+template<class T> class Node;
 
 template<class T>
 class Node{
-private:
-    T data;
-    Node<T>*next;
-    friend class MyList;
-    friend class MyListInterator;
-public:
-    Node<T>(const T& elem): data(elem), next(nullptr){}
+    public:
+        T data;
+        Node<T> *next;
+        Node(const T& elem): data(elem), next(nullptr){}
 };
 
 template <class T>
 class MyList{
 private:
-    Node<T>* head;
-    Node<T>* tail;
-    int dataSize = 0;
+    Node<T> *head;
+    Node<T> *tail;
+    size_t dataSize;
 
+    void create();          //implementa o construtor padrao
+    void destroy(Node<T>*ptr);         //implementa o destrutor 
+        
 public:
     typedef MyListIterator<T> iterator;
-    // ---------------- Construtores e destrutor ---------
-    /*ok */ MyList(T val);                           // construtor com valor inicial
-    /*ok */ MyList();                                // construtor padrao
-    /*ok */ ~MyList(){clear();}                      // destrutor
-    /*ok */ void clear();                            // limpa a lista
-    
-    // ---------------- Inserir e Remover ----------------
-    /*ok */ void push_back(const T& val);            // insere elemento no final
-    /*ok */ void push_front(const T& val);           // insere elemento no início
-    /*ok */ void pop_back();                         // remove elemento do final
-    /*ok */ void insert(const T&, int pos);          // insere elemento em posição específica
 
-    //  ---------------- Impressoes ---------------------
-    /*ok */ void imprimir();                         // imprime lista iterativamente
-    /*ok */ void imprimirRecursivo(Node<T>* ptr);    // imprime lista recursivamente (ajudante)
-    /*ok */ void imprimirRecursivo();                // imprime lista recursivamente (público)
-    /*ok */ void imprimirInverso(Node<T> *ptr);      // imprime inversamente (ajudante)
-    /*ok */ void imprimirInverso();                  // imprime inversamente (público)
+    /*ok */ MyList();       //constutor padrao
+    /*ok */ MyList(int tam, const T& init); //construtor que preenche a lista ate tam com init
+    /*ok */ MyList(Node<T>& other); // construtor por copia
+    /*ok */ ~MyList();      // destrutor 
+    /*ok */ void destroy(); 
 
-    // ---------------- Funcoes importantes --------------
-    /*ok */ int size() const;                        // retorna o tamanho da lista
-    /*ok */ bool empty();                            // verifica se a lista está vazia
-    /*ok */ void copy(Node<T>* other);               // copia outra lista
-    /*ok */ Node<T>* find(Node<T>*ptr, T val);       // busca valor recursivamente(ajudante)
-    /*ok */ Node<T>* buscar(T val);                  // busca valor recursivamente(publico)
+    /*ok */ void push_back(const T& elem);
+    /*ok */ void push_front(const T& elem);
+    /*ok */ void pop_back();
+    /*not */ void insert (size_t pos, const T& elem);
 
-    // ----------------- Funcoes iterator ----------------
-    iterator begin(){ return iterator(head) };
-    iterator end(){ return iterator(tail->next) };
+    /*ok */ bool empty() const;     //todo metodo que nao altera o estado tem que ser const
+    /*ok */ size_t size() const;
+
+    iterator begin() {
+        return iterator(head);
+    };
+    iterator end(){
+        return iterator(nullptr);
+    }
 };
+
+template<class T>
+size_t MyList<T>::size() const{
+    return dataSize;
+}
 
 template <class T>
-class MyListInterator{
-private:
-    Node<T>* current;
-public:
-    MyListIterator(Node<T>*ptr = nullptr): current(ptr){}
-    T& operator*(){
-        if(current == nullptr) throw std::runtime_error("Erro: tentativa de derreferenciar um iterator nulo.");
-        else{
-            return current->data;
-        }
-    }
-    
-    MyListInterator operator++(){
-        if(current) current = current->next; 
-        return *this;
-    }
-    
-    bool operator==(const MyListInterator& other) const{
-        return current == other.current;
-    }
-    
-    bool operator!= (const MyListInterator& other) const{
-        return !(current == other.current);
-    }
+bool MyList<T>::empty() const{
+    return head == nullptr;
+}
 
-};
+template <class T>
+void MyList<T>::create(){
+    dataSize = 0;
+    head = tail = nullptr;
+}
 
-// ---------------- Construtores e destrutor ----------------
 template<class T>
-MyList<T>::MyList() {
-    head = nullptr;
-    tail = nullptr;
+void MyList<T>::destroy(Node<T>* ptr){
+    if(!ptr) return;
+    destroy(ptr->next);
+    delete ptr;
+
+}
+template<class T>
+void MyList<T>::destroy(){
+    destroy(head);
+    head = tail = nullptr;
     dataSize = 0;
 }
 
 template <class T>
-MyList<T>::MyList(T val){
-    Node<T>*ptr = new Node<T>(val);      //isso aqui eh a criacao padrao
-    ptr->data = val;
-    ptr->next = nullptr;
-    head = ptr;
-    tail = ptr;
-    dataSize++;
+MyList<T>::MyList(){
+    create();
 }
 
-template<class T>
-void MyList<T>::clear(){
-    Node<T>* current = head;
-    while(current){
-        Node<T>* nextptr = current->next;
-        delete current;
-        current = nextptr;
-    }
-    head = nullptr;
-    tail = nullptr;
-    dataSize = 0;
-}
-
-// ---------------- Inserir e Remover ----------------
 template <class T>
-void MyList<T>::push_back(const T& val){
-    Node<T>* newNode = new Node<T>(val);
-    newNode->next = nullptr;
+MyList<T>::MyList(int tam, const T& init):head(nullptr), tail(nullptr), dataSize(0){
+    for(int i=0; i<tam; i++){
+        push_back(init);
+    }
+    //eh bom reutilizar o push_back pois ele:
+    //cuida da alocacao, conecta os nos, atualiza head, atualiza tail e atualiza datasize
+}
 
+template <class T>
+MyList<T>::~MyList(){
+    destroy();
+}
+
+template <class T>
+void MyList<T>::push_back(const T& elem){
+    Node<T>* newNode = new Node<T>(elem);
     if(empty()){
-        head = newNode;
-        tail= newNode;
+        tail = head = newNode;
     }
     else{
-       tail->next = newNode;
-       tail = newNode; 
+        tail->next = newNode;
+        tail = newNode;
     }
+    newNode->next = nullptr;
     dataSize++;
 }
 
-template<class T>
-void MyList<T>::push_front(const T& val){
-    Node<T>*newNode = new Node<T>(val);
-    
+template <class T>
+void MyList<T>::push_front(const T& elem){
+    Node<T> *newNode = new Node<T>(elem);
+
     if(empty()){
-        head = newNode;
-        tail = newNode;
+        head = tail = newNode;
     }
-    else{   
+    else{
         newNode->next = head;
         head = newNode;
     }
@@ -150,117 +126,55 @@ void MyList<T>::push_front(const T& val){
 template <class T>
 void MyList<T>::pop_back(){
     if(empty()) return;
-    if (head == tail){
+    
+    if(head == tail){
         delete head;
-        head = nullptr;
-        tail = nullptr;
+        head = tail = nullptr;
     }
     else{
-        Node<T> *current = head;
+        Node<T>* current = head;
         while(current->next != tail){
             current = current->next;
         }
-        delete tail;
+        delete tail; // ou delete current->next que sera o tail, mesma coisa
         tail = current;
         tail->next = nullptr;
     }
     dataSize--;
 }
 
-template<class T>
-void MyList<T>::insert(const T& val, int pos){
-    if(pos < 0 || pos > dataSize){
-        std::cout << "Posicao invalida." << std::endl; 
-        return;
-    }
-    else if(pos == 0){
-        push_front(val);
-    }
-    else if(pos == dataSize){
-        push_back(val);
-    }
+template <class T>
+void MyList<T>::insert(size_t pos, const T& elem){
+    if(pos < 0 || pos > size()) throw std::out_of_range("Posicao invalida");
+
+    else if(pos == 0){ push_front(elem); }
+    else if(pos == size()){ push_back(elem);}
     else{
-        Node<T>* newNode = new Node<T>(val);
-        Node<T>* aux = head;
-
-        for(int i = 0; i < pos-1; i++){
-            aux = aux->next;
-        }
-        newNode->next = aux->next;
-        aux->next = newNode;
-        dataSize++;
+        auto it = begin();
+        std::advance(it, pos);  // avanca ate posicao
+        insert(it, elem);       // reutiliza a versao com interador
     }
 }
 
-//  ---------------- Impressoes ----------------
 template<class T>
-void MyList<T>::imprimir(){
-    if(empty()) return;
+class MyListIterator{
+private:
+    Node<T>*current;
 
-    Node<T>* current = head;
-    while(current != nullptr){
-        std::cout << current->data << " ";
+public:
+    MyListIterator(Node<T>*node): current(node){}
+
+    //operadores
+    T& operator*(){ return current->data; }  //* operador de derreferenciacao 
+
+    MyListIterator operator++(){
         current = current->next;
+        return *this;
     }
-    std::cout << std::endl;
-}
-
-template <class T>
-void MyList<T>::imprimirRecursivo(Node<T>* ptr){
-    if (!ptr) return;       //!ptr é igual a ptr == nullptr, mesma verificação
-    std::cout << ptr->data << " ";
-    imprimirRecursivo(ptr->next);
-}
-
-template <class T>
-void MyList<T>::imprimirRecursivo(){
-    imprimirRecursivo(head);
-}
-
-template <class T>
-void MyList<T>::imprimirInverso(Node<T>*ptr){
-    if(empty()) return;
-
-    imprimirInverso(ptr->next);
-    std::cout<< ptr->data << " ";
-}
-
-template <class T>  
-void MyList<T>::imprimirInverso(){
-    imprimirInverso(head);
-}
-
-// ---------------- Funcoes importantes ----------------
-template<class T>
-int MyList<T>::size() const{
-    return dataSize;
-}
-
-template <class T>
-bool MyList<T>::empty(){
-  return head == nullptr;
-}
-
-template<class T>
-void MyList<T>::copy(Node<T>* other){
-    clear();
-    if (!other) return;
-
-    while(other){
-        push_back(other->data);
-        other = other->next;
+    bool operator!=(const MyListIterator &other) const{
+        return !(*this == other);
     }
-}
-
-template <class T>
-Node<T>* MyList<T>::find(Node<T>*ptr, T elem){
-    if (!ptr) return nullptr;
-
-    if(ptr->data == elem) return ptr;
-    return find(ptr->next, elem);
-}
-
-template <class T>
-Node<T>* MyList<T>::buscar(T val) {
-    return find(head, val);
-}
+    bool operator == (const MyListIterator &other) const{
+        return current == other.current;
+    }
+};

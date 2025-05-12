@@ -2,6 +2,7 @@
 #include <string>
 #include "MyListStruct.h"
 
+
 void testarInicio() {
     std::cout << "\n===== TESTE DOS CONSTRUTORES =====\n";
     
