@@ -84,7 +84,7 @@ void testaEraseMatchingElements() {
       string elemRemover;
       cin >> elemRemover;
       cout << "Removendo: " << elemRemover << endl;
-      int numRemoved = 0;//v.eraseMatchingElements(elemRemover);
+      int numRemoved = 0; v.eraseMatchingElements(elemRemover);
       cout << "Numero de elementos removidos: " << numRemoved << endl;
       cout << "Nova lista: ";
       cout << v << endl;
