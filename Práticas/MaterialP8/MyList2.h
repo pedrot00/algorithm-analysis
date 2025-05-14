@@ -86,15 +86,14 @@ public:
 
 	bool empty() const {return size() == 0;};
 	int size() const {return dataSize;}; // na STL List, a funcao size() calcula o tamanho da lista dinamicamente (exercicio: qual a ordem de complexidade?)
-	int size() const{};
 	
-	int eraseMatchingElements (const T&elem){};
+	int eraseMatchingElements (const T&elem);
 
 private:
 	Node<T> *dataFirst, * dataLast;
 	int dataSize; //quantos elementos ha na lista?
 
-	int size(Node<T>*elem) const{};
+	int size(Node<T>*elem) const;
 	void create();
 	void destroy();
 	void destroy(Node<T> * it);
@@ -132,10 +131,10 @@ void MyList2<T>::push_front(const T&elem) {
 template<class T>
 void MyList2<T>::insert(const T&elem, iterator whereIt) { 	
 
-	if(whereIt.ptr == begin()){		//caso especial inicio lista
+	if(whereIt == begin()){		//caso especial inicio lista
 		push_front(elem);
 	} 
-	else if(whereIt.ptr == end()){    //caso especial no final ou lista fazia
+	else if(whereIt == end()){    //caso especial no final ou lista fazia
 		push_back(elem);
 	}
 	else{
@@ -299,10 +298,6 @@ void MyList2<T>::push_back(const T&elem) {
 	dataSize++;
 }
 
-template<class T>
-int MyList2<T>::size() const {
-    return size(dataLast);
-}
 
 template<class T>
 int MyList2<T>::size(Node<T>* node) const {
@@ -350,7 +345,7 @@ typename MyList2<T>::iterator MyList2<T>::erase(iterator elemIt) { //remove o el
 	}
 }
 
-template<class T>	//REFAZER FALTA CONTADOR, FALTA LOOP FALTA A PORRA TODA
+template<class T>
 int MyList2<T>::eraseMatchingElements(const T&elem){
 	if(empty()) return 0;
 	int cont = 0;
