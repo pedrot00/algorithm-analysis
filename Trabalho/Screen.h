@@ -15,9 +15,9 @@ public:
     /*OK*/ ~Screen();
 
     /*OK*/ int getLargura() const;
-    /*OK*/ int getAltura() const;
+    /*OK*/ int getAltura() const;       //talvez possa ser excluidos se n forem usados
     /*OK*/ int get(int r, int c);                //retorna estado “pixel”  lin r, col c da tela
-    void set (int r, int c, int val);     //guarda em lin r, col c o estado val ( FOOD, SNAKE ou EMPTY)
+    /*OK*/ void set (int r, int c, int val);     //guarda em lin r, col c o estado val ( FOOD, SNAKE ou EMPTY)
 
 };
 

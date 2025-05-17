@@ -2,7 +2,7 @@
 #include <stdexcept>
 #include "Screen.h"
 
-///----------- constutor
+//----------- constutor
 Screen::Screen(int width, int heigth)
     :largura(width), altura(heigth)         //inicializa com altura e largura definida nos param
 {
@@ -16,7 +16,7 @@ Screen::Screen(int width, int heigth)
         data[i] = new int [largura];
 }   
 
-///----------- destrutor
+//----------- destrutor
 Screen::~Screen(){
     for(int i= 0; i < altura; i++)
         delete[] data[i];               //desaloca col matriz
