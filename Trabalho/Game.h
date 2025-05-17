@@ -12,12 +12,14 @@ private:
     int food [10];
 
 public:
-    Game(int altura, int largura, int tamanhoCobra);
+    Game(int altura, int largura, int snakeSize);
 
-    Screen getScreen();
+    Screen getScreen() const;
+    int getNumFood() const;
+
     void addFood(int r,int c, int ttl);
     bool step(int dr, int dc);
-    int getNumFood();
+  
 
 };
 
