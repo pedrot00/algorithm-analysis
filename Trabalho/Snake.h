@@ -12,15 +12,15 @@ private:
     };
     Node* head;
     Node* tail;
-    int length;
+    int length =0;;
 
 public:
     /*OK*/ Snake (int len);
     /*OK*/ ~Snake();
 
-    void draw(Screen& s, int state);
-    void move(int dr, int dc, bool eating);
-    int getLength() const;
+    /*OK*/ void draw(Screen& s, int state);
+    /*OK*/ void move(int dr, int dc, bool eating);
+    /*OK*/ int getLength() const;
 };
 
 #endif

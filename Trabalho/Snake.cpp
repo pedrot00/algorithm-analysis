@@ -7,7 +7,7 @@
 Snake::Snake(int len)
     : head(nullptr), tail(nullptr), length(len)
 { 
-    //perceba que a cobra comeca sempre na cauda: calda -> no -> no -> no -> cabeca
+    //perceba que a cobra comeca sempre na cauda: cauda -> no -> no -> no -> cabeca
 
     if (len < 1)                //validacao para possiveis casos de teste
     throw std::invalid_argument("Comprimento da cobra deve ser >= 1") ;
@@ -35,7 +35,36 @@ Snake::~Snake(){
     }
 }
 
-
+//setta pixels com const SNAKE onde cobra deveria estar 
 void Snake::draw(Screen& s, int state){
-  
+   Node* current = tail;
+   while(current){
+        s.set(current->row, current->col, state);
+        current = current->next;
+   }
+}
+
+//length eh atributo fundamental p funcionalidade O(1) exigida
+void Snake::move(int dr, int dc, bool eating) {
+    int newRow = head->row + dr;
+    int newCol = head->col + dc;
+
+    if (eating) {
+        Node* newHead = new Node(newRow,newCol);
+        newHead->next = head;
+        head = newHead;
+        length++;
+    } else {
+        Node* oldTail = tail;
+        tail = tail->next;
+
+        oldTail->row = newRow;
+        oldTail->col = newCol;
+        oldTail->next = head;
+        head = oldTail;
+    }
+}
+
+int Snake::getLength() const{
+    return length;
 }

@@ -20,7 +20,6 @@ public:
     void addFood(int r,int c, int ttl);
     bool step(int dr, int dc);
   
-
 };
 
 #endif
