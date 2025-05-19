@@ -65,6 +65,37 @@ void Snake::move(int dr, int dc, bool eating) {
     }
 }
 
-int Snake::getLength() const{
+int Snake::getSize() const{
     return length;
+}
+int Snake::getRow(int i) const {
+    Node* current = head;
+    int count = 0;
+    while (current != nullptr && count < i) {
+        current = current->next;
+        count++;
+    }
+    if (current != nullptr) return current->row;
+    return -1;
+}
+
+int Snake::getCol(int i) const {
+    Node* current = head;
+    int count = 0;
+    while (current != nullptr && count < i) {
+        current = current->next;
+        count++;
+    }
+    if (current != nullptr) return current->col;
+    return -1;
+}
+
+int Snake::getDr() const {
+    if (head->next == nullptr) return 0; // Cobra tem um único nó, direção neutra
+    return head->row - head->next->row;
+}
+
+int Snake::getDc() const {
+    if (head->next == nullptr) return 0;
+    return head->col - head->next->col;
 }

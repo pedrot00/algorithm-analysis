@@ -20,7 +20,17 @@ public:
 
     /*OK*/ void draw(Screen& s, int state);
     /*OK*/ void move(int dr, int dc, bool eating);
-    /*OK*/ int getLength() const;
+    
+
+    // func auxiliares (utilizadas em Game)
+    /*OK*/ int getSize() const;
+    /*OK*/ int getHeadRow() const {return head->row;}
+    /*OK*/ int getHeadCol() const {return head->col;}
+    /*OK*/ int getRow(int i) const;
+    /*OK*/ int getCol(int i) const;
+
+    /*OK*/ int getDr() const;
+    /*OK*/ int getDc() const;
 };
 
 #endif

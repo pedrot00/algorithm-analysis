@@ -3,22 +3,29 @@
 
 #include "Snake.h"
 #include "Screen.h"
-#include <string.h>
 
-class Game{
+class Game{     
 private:
-    Snake snake;              //cobra do jogo
-    Screen screen;           // estado atual tela do jogo (gerenciada pela class Game)
-    int food [10];
+    Snake* snake;              //cobra do jogo
+    Screen* screen;            // estado atual tela do jogo (gerenciada pela class Game)
+
+    struct Food{
+        int foodRow;
+        int foodCol;
+        int ttl;
+    };
+    Food food[10];
+    int numFoodAtivas=0 ;      //quantidade de comida ativa no mapa
 
 public:
-    Game(int altura, int largura, int snakeSize);
+    /*OK*/ Game(int linha, int coluna, int snakeSize);
+    /*OK*/ ~Game();
 
-    Screen getScreen() const;
-    int getNumFood() const;
+    /*OK*/ Screen getScreen() const;
+    /*OK*/ int getNumFood() const;
 
     void addFood(int r,int c, int ttl);
-    bool step(int dr, int dc);
+    /*OK*/ bool step(int dr, int dc);
   
 };
 

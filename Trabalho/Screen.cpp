@@ -26,16 +26,16 @@ Screen::~Screen(){
 }
 
 //----------- getters
-int Screen::getLargura() const {
+int Screen::getWidth() const {
     return largura;
 }
 
-int Screen::getAltura() const {
+int Screen::getHeight() const {
     return altura;
 }
 
 // r = linha, c = coluna
-int Screen::get(int r, int c){      
+int Screen::get(int r, int c) const{      
     if(r < 0 || r >= altura ||c < 0 || c >= largura) 
         return WALL;   //valor acessador fora da matriz retorna WALL = 3
 
