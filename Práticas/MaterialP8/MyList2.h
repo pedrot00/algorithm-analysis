@@ -346,44 +346,35 @@ typename MyList2<T>::iterator MyList2<T>::erase(iterator elemIt) { //remove o el
 }
 
 template<class T>
-int MyList2<T>::eraseMatchingElements(const T&elem){
-	if(empty()) return 0;
-	int cont = 0;
-
-	if(dataFirst == dataLast && dataFirst->data == elem){
-		delete dataFirst;
-		dataFirst = dataLast = nullptr;
-		dataSize=0;
-		return 1;
-	}
-
-	Node<T>* current = dataFirst;
-	while(current->next){
-		if( current->data == elem){
-			Node<T>* toDelete = current;
-
-			if(current == dataFirst){
-				dataFirst = dataFirst->next;
-				if(dataFirst)
-					dataFirst->prev = nullptr;
-			}
-			else if(current == dataLast){
-				dataLast = dataLast->prev;
-				if(dataLast)
-					dataLast->next = nullptr;
-			}
-			else{
-				current->prev->next = current->next;
-				current->next->prev = current->prev;
-			}
-			current = current->next;
+int MyList2<T>::eraseMatchingElements(const T& elem) {
+    if(empty()) return 0;
+    int cont = 0;
+    Node<T>* current = dataFirst;
+    
+    while(current) {
+        if(current->data == elem) {
+            Node<T>* toDelete = current;
+            
+            if(current->prev)
+                current->prev->next = current->next;
+            else
+                dataFirst = current->next;
+                
+            if(current->next)
+                current->next->prev = current->prev;
+            else
+                dataLast = current->prev;
+            
+            Node<T>* next = current->next;
 			delete toDelete;
-			dataSize--;
-			cont++;
-		}
-		else{ current = current->next;}
-	}
-	return cont;
+			current = next;	
+            dataSize--;
+            cont++;
+        } else {
+            current = current->next;
+        }
+    }
+    return cont;
 }
 
 template<class T2>

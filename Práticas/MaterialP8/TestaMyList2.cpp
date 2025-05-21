@@ -140,20 +140,31 @@ void testaEraseMatchingElements() {
 
 template<class T>
 void reverse(typename MyList2<T>::iterator begin, typename MyList2<T>::iterator end) {
-  //termine a implementacao desta funcao! Você só poderá utilizar os iteradores begin/end!
-  if(begin != end) return;
-  typename MyList2<T>::iterator left = begin;
-  typename MyList2<T>::iterator right = end;
-  --right;
+    if (begin == end) return;
 
-  while (left != right){
-    std::swap(*left, *right);
-    ++left;
-    
-    if(left == right) break;
-    --right;
-  } 
+    int size = 0;
+    for (typename MyList2<T>::iterator it = begin; it != end; ++it) {
+        ++size;
+    }
+
+    if (size <= 1) return;
+
+    T* temp = new T[size];
+    int i = 0;
+
+    for (typename MyList2<T>::iterator it = begin; it != end; ++it, ++i) {
+        temp[i] = *it;
+    }
+
+    i = 0;
+    for (typename MyList2<T>::iterator it = begin; it != end; ++it, ++i) {
+        *it = temp[size - 1 - i];
+    }
+
+    delete[] temp;
 }
+
+
 
 void testaReverse() {
   int n;
