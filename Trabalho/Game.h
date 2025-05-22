@@ -8,8 +8,8 @@ class Game {
 private:
     Snake* snake;
     Screen* screen;
-    int** food;
-    int numFoodAtivas;
+    int** food;         //[ttl, row, col] - mais facil armazenar toda a estrutura de food de uma vez -> struct funcionaria tmb
+    int numFoodAtivas;  //var q controla as comidas ativas no mapa
 
     int prevRow;  //auxiliares
     int prevCol;  

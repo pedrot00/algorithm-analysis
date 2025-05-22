@@ -27,21 +27,15 @@ Screen::~Screen(){
 }
 
 
-//----------- getters
-int Screen::getWidth() const {
-    return largura;
-}
-
-int Screen::getHeight() const {
-    return altura;
-}
+int Screen::getHeight() const { return altura;}
+int Screen::getWidth() const { return largura;}
 
 // r = linha, c = coluna
 int Screen::get(int r, int c) const {      
-    if(r < 0 || r >= altura ||c < 0 || c >= largura)  return WALL;   //valor acessador fora da matriz retorna WALL = 3
+    if(r < 0 || r >= altura ||c < 0 || c >= largura)  return WALL;   //valor acessado fora da matriz retorna WALL = 3
     if(r >= dataHeight[c] || dataHeight[c] == 0) return EMPTY;
 
-    return data[c][r];  //primeiro coluna depois linha, proposital
+    return data[c][r];  //primeiro coluna depois linha, (proposital)
 }
 
 //----------- setters
@@ -53,7 +47,7 @@ void Screen::set(int r, int c, int val) {
     if (data[c] == nullptr) {                   //coluna vazia cria array
         data[c] = new int[r + 1];
         for (int i = 0; i <= r; i++)
-            data[c][i] = EMPTY;                 //comeca tudo EMPTY
+            data[c][i] = EMPTY;                 //comeca mapa todo EMPTY
         dataHeight[c] = r + 1;
     }
     
