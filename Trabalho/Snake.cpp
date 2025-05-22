@@ -1,101 +1,102 @@
 #include "Snake.h"
-#include "Screen.h"
-#include <iostream>
-#include <exception>
+#include <stdexcept>
 
-//----------- constutor
 Snake::Snake(int len)
-    : head(nullptr), tail(nullptr), length(len)
-{ 
-    //perceba que a cobra comeca sempre na cauda: cauda -> no -> no -> no -> cabeca
+    : head(nullptr), tail(nullptr), snakeSize(len)
+{
+    if (len < 1)                    
+        throw std::invalid_argument("Comprimento da cobra deve ser >= 1");
 
-    if (len < 1)                //validacao para possiveis casos de teste
-    throw std::invalid_argument("Comprimento da cobra deve ser >= 1") ;
-
-    tail = new Node(0,0);       //setta cauda sempre no pixel (0,0)
+    tail = new Node(0, 0);
     Node* current = tail;
 
-     for(int c=1; c<length; c++){
-        Node* newNode = new Node(0,c);
-
+    for (int c = 1; c < len; ++c) {
+        Node* newNode = new Node(0, c);
         current->next = newNode;
         current = newNode;
     }
-    head = current;             //setta cabeca sempre no pixel (0, len -1)
+    head = current;
 }
 
-//----------- destrutor
-Snake::~Snake(){
+Snake::~Snake() {
     Node* current = tail;
-
-    while(current){                    //mesmo que current != nullptr
+    while (current) {
         Node* toDelete = current;
         current = current->next;
-        delete toDelete;               //desaloca cada nodulo sem perder o proximo
+        delete toDelete;
     }
 }
 
-//setta pixels com const SNAKE onde cobra deveria estar 
-void Snake::draw(Screen& s, int state){
-   Node* current = tail;
-   while(current){
+void Snake::draw(Screen& s, int state) {
+    Node* current = tail;
+    while (current) {
         s.set(current->row, current->col, state);
         current = current->next;
-   }
+    }
 }
 
-//length eh atributo fundamental p funcionalidade O(1) exigida
 void Snake::move(int dr, int dc, bool eating) {
     int newRow = head->row + dr;
     int newCol = head->col + dc;
 
     if (eating) {
-        Node* newHead = new Node(newRow,newCol);
+        // criando cabeca
+        Node* newHead = new Node(newRow, newCol);
         newHead->next = head;
         head = newHead;
-        length++;
+        snakeSize++;
     } else {
+        // reutilizando cauda como nova cabeca
         Node* oldTail = tail;
         tail = tail->next;
 
         oldTail->row = newRow;
         oldTail->col = newCol;
-        oldTail->next = head;
+        oldTail->next = nullptr;
+
+        head->next = oldTail;  
         head = oldTail;
     }
 }
 
-int Snake::getSize() const{
-    return length;
+int Snake::getLength() const {
+    return snakeSize;
 }
+
+int Snake::getHeadRow() const {
+    return head->row;
+}
+
+int Snake::getHeadCol() const {
+    return  head->col;
+}
+
 int Snake::getRow(int i) const {
-    Node* current = head;
+    Node* current = tail;
     int count = 0;
-    while (current != nullptr && count < i) {
+    while (current && count < i) {
         current = current->next;
-        count++;
+        ++count;
     }
-    if (current != nullptr) return current->row;
-    return -1;
+    return current ? current->row : -1;
 }
 
 int Snake::getCol(int i) const {
-    Node* current = head;
+    Node* current = tail;
     int count = 0;
-    while (current != nullptr && count < i) {
+    while (current && count < i) {
         current = current->next;
-        count++;
+        ++count;
     }
-    if (current != nullptr) return current->col;
-    return -1;
+    return current ? current->col : -1;
 }
 
 int Snake::getDr() const {
-    if (head->next == nullptr) return 0; // Cobra tem um único nó, direção neutra
+    if (!head || !head->next) return 0;
     return head->row - head->next->row;
 }
 
 int Snake::getDc() const {
-    if (head->next == nullptr) return 0;
+    if (!head || !head->next) return 0;
     return head->col - head->next->col;
 }

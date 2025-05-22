@@ -1,105 +1,108 @@
 #include "Game.h"
-#include "Snake.h"
+#include <iostream>
 
-Game::Game(int linha, int coluna, int snakeSize){
-    screen = new Screen(linha, coluna);
+Game::Game(int linha, int coluna, int snakeSize) {
+    screen = new Screen(coluna, linha);  // linha = altura, coluna = largura
     snake = new Snake(snakeSize);
+    snake->draw(*screen, Screen::SNAKE);
+
+    food = new int*[10];  // maximo de 10 comidas
+    for (int i = 0; i < 10; i++) {
+        food[i] = new int[3];  // [ttl, row, col]
+    }
+    numFoodAtivas = 0;
+
+    prevRow = snake->getHeadRow(); 
+    prevCol = snake->getHeadCol(); 
+}
+
+Game::~Game() {
+    delete screen;
+    delete snake;
+    for (int i = 0; i < 10; i++) {
+        delete[] food[i];
+    }
+    delete[] food;
+
+    screen = nullptr;
+    snake = nullptr;
+    food = nullptr;
     numFoodAtivas = 0;
 }
 
-Game::~Game(){
-    delete screen;
-    delete snake;
+void Game::addFood(int r, int c, int ttl) {
+    if (screen->get(r, c) != Screen::EMPTY) return;
+
+    if (numFoodAtivas < 10) {
+        food[10 - numFoodAtivas - 1][0] = ttl + 1;
+        food[10 - numFoodAtivas - 1][1] = r;
+        food[10 - numFoodAtivas - 1][2] = c;
+
+        numFoodAtivas++; 
+        screen->set(r, c, Screen::FOOD);
+    }
 }
 
-Screen Game::getScreen() const{
-    return *screen;
-}
+void Game::removeFood(int r, int c) {
+    for (int i = 10 - numFoodAtivas; i < 10; ++i) {
+        if (food[i][1] == r && food[i][2] == c) {
+            food[i][0] = food[10 - numFoodAtivas][0];
+            food[i][1] = food[10 - numFoodAtivas][1];
+            food[i][2] = food[10 - numFoodAtivas][2];
 
-int Game::getNumFood() const{
-    return numFoodAtivas;
+            numFoodAtivas--;  
+            screen->set(r, c, Screen::EMPTY);
+            break;
+        }
+    }
 }
 
 bool Game::step(int dr, int dc) {
-    int currDr = snake->getDr();
-    int currDc = snake->getDc();
-
-    if (dr == -currDr && dc == -currDc) {
-        dr = currDr;
-        dc = currDc;
-    }
-
     int headRow = snake->getHeadRow();
     int headCol = snake->getHeadCol();
+
+    if (dr == -1 * (headRow - prevRow) && dc == -1 * (headCol - prevCol)) {
+        dr = headRow - prevRow;
+        dc = headCol - prevCol;
+    }
 
     int newRow = headRow + dr;
     int newCol = headCol + dc;
 
-    if (newRow < 0 || newRow >= screen->getHeight() || newCol < 0 || newCol >= screen->getWidth())
-        return false;
+    int elemento = screen->get(newRow, newCol);
 
-    if (screen->get(newRow, newCol) == screen->SNAKE || screen->get(newRow, newCol) == screen->WALL)
-        return false;
+    if (elemento == Screen::WALL) return false;
 
-    bool comeu = false;
-    for (int i = 0; i < numFoodAtivas; i++) {
-        if (food[i].foodRow == newRow && food[i].foodCol == newCol) {
-            comeu = true;
-            screen->set(newRow, newCol, screen->EMPTY);
-
-            for (int j = i; j < numFoodAtivas - 1; j++)
-                food[j] = food[j + 1];
-            numFoodAtivas--;
-
-            break;
-        }
-    }
-    if (!comeu) {
-        int tailRow = snake->getRow(snake->getSize() - 1);
-        int tailCol = snake->getCol(snake->getSize() - 1);
-        screen->set(tailRow, tailCol, screen->EMPTY);
+    if (elemento == Screen::SNAKE) {
+        int tailRow = snake->getTailRow();
+        int tailCol = snake->getTailCol();
+        if (newRow != tailRow || newCol != tailCol) return false;
     }
 
+    bool comeu = (elemento == Screen::FOOD);
+    if (comeu) {
+        removeFood(newRow, newCol);  
+    }
+    snake->draw(*screen, Screen::EMPTY);
     snake->move(dr, dc, comeu);
+    snake->draw(*screen, Screen::SNAKE);
 
-    int newHeadRow = snake->getRow(0);
-    int newHeadCol = snake->getCol(0);
-    screen->set(newHeadRow, newHeadCol, screen->SNAKE);
-
-    for (int i = 0; i < numFoodAtivas; ) {
-        food[i].ttl--;
-        if (food[i].ttl <= 0) {
-            screen->set(food[i].foodRow, food[i].foodCol, screen->EMPTY);
-            for (int j = i; j < numFoodAtivas - 1; j++)
-                food[j] = food[j + 1];
-            numFoodAtivas--;
-        } else {
-            i++;
+    for (int i = 10 - numFoodAtivas; i < 10; i++) {
+        if (food[i][0] > 0) {
+            food[i][0]--;
+            if (food[i][0] == 0) {
+                screen->set(food[i][1], food[i][2], Screen::EMPTY);
+            }
         }
     }
-
-    for (int i = 0; i < numFoodAtivas; i++) {
-        screen->set(food[i].foodRow, food[i].foodCol, screen->FOOD);
+    int pos = 10 - numFoodAtivas;
+    while (numFoodAtivas > 0 && pos < 10 && food[pos][0] == 0) {
+        pos++;
+        numFoodAtivas--;
     }
+
+    prevRow = headRow;
+    prevCol = headCol;
 
     return true;
 }
-
-void Game::addFood(int r, int c, int ttl) {
-    if (r < 0 || r >= screen->getHeight() || c < 0 || c >= screen->getWidth())
-        return;
-
-    if (screen->get(r, c) != screen->EMPTY)
-        return;
-
-    screen->set(r, c, screen->FOOD);
-
-    if (numFoodAtivas < 10) {
-        food[numFoodAtivas].foodRow = r;
-        food[numFoodAtivas].foodCol = c;
-        food[numFoodAtivas].ttl = ttl;
-        numFoodAtivas++;
-    }
-}
-
-

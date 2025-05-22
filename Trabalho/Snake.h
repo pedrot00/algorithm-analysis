@@ -1,36 +1,37 @@
 #ifndef SNAKE_H
 #define SNAKE_H
+
 #include "Screen.h"
 
-
-class Snake{
+class Snake {
 private:
     struct Node {
         int row, col;
         Node* next;
-        Node(int r, int c): row(r), col(c), next(nullptr){}
+        Node(int r, int c) : row(r), col(c), next(nullptr) {}
     };
-    Node* head;
-    Node* tail;
-    int length =0;;
+    Node* head;     // cabeca -> final da lista
+    Node* tail;     // cauda ->  inicio da lista
+    int snakeSize;
 
 public:
-    /*OK*/ Snake (int len);
-    /*OK*/ ~Snake();
+    Snake(int len);
+    ~Snake();
 
-    /*OK*/ void draw(Screen& s, int state);
-    /*OK*/ void move(int dr, int dc, bool eating);
+    void draw(Screen& s, int state);
+    void move(int dr, int dc, bool eating);
+
+    int getLength() const;
+    int getHeadRow() const;
+    int getHeadCol() const;
+    int getRow(int i) const;
+    int getCol(int i) const;
     
+    int getTailRow() const { return tail->row; }
+    int getTailCol() const { return tail->col; }
 
-    // func auxiliares (utilizadas em Game)
-    /*OK*/ int getSize() const;
-    /*OK*/ int getHeadRow() const {return head->row;}
-    /*OK*/ int getHeadCol() const {return head->col;}
-    /*OK*/ int getRow(int i) const;
-    /*OK*/ int getCol(int i) const;
-
-    /*OK*/ int getDr() const;
-    /*OK*/ int getDc() const;
+    int getDr() const;
+    int getDc() const;
 };
 
 #endif
