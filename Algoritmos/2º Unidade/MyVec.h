@@ -30,6 +30,7 @@ public:
     /*Ok */ void resize();
 
     /*Ok */ void push_back(const T& val);
+            void push_front(const T& val);
     /*Ok */ void pop_back();
     /*Ok */ void insert(const T& val, int pos);
 
@@ -239,4 +240,14 @@ void MyVec<T>::merge(int inicio, int meio, int fim){
     }
     delete[] tempEsq;
     delete[] tempDir;
+}
+
+template <class T>
+void MyVec<T>::push_front(const T& elem){
+    if(size() == dataCapacity) resize();
+
+    for(int i= size(); i>0; i--)
+        data[i] = data[i-1];
+    data[0] = elem;
+    dataSize++;
 }
