@@ -123,27 +123,20 @@ MyList<T>::MyList(T val){
 
 template<class T>
 void MyList<T>::clear(){
-    Node<T>* current = head;
-    while(current){
-        Node<T>* nextptr = current->next;
-        delete current;
-        current = nextptr;
+   Node* current = head;
+   while(current){
+        Node *toDelete = current;
+        current = current->next;
+        delete toDelete;
     }
-    head = nullptr;
-    tail = nullptr;
-    dataSize = 0;
+    head = nullptr; dataSize = 0;
 }
 
 // ---------------- Inserir e Remover ----------------
 template <class T>
 void MyList<T>::push_back(const T& val){
     Node<T>* newNode = new Node<T>(val);
-    newNode->next = nullptr;
-
-    if(empty()){
-        head = newNode;
-        tail= newNode;
-    }
+    if(empty()) head = tail = newNode;
     else{
        tail->next = newNode;
        tail = newNode; 
@@ -155,15 +148,11 @@ template<class T>
 void MyList<T>::push_front(const T& val){
     Node<T>*newNode = new Node<T>(val);
     
-    if(empty()){
-        head = newNode;
-        tail = newNode;
-    }
-    else{   
+    if(empty()) head =tail = newNode;
+    else {   
         newNode->next = head;
         head = newNode;
-    }
-    dataSize++;
+    } dataSize++;
 }
 
 template <class T>
@@ -320,3 +309,4 @@ typename MyList<T>::iterator MyList<T>::erase(iterator pos){
 
     return iterator(nextNode);
 }
+
