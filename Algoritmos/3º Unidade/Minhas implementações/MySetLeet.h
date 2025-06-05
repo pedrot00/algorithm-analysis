@@ -51,6 +51,13 @@ public:
 
     /*OK */ void deleteNode(Node<T>*toDelete);
     /*OK */ Node<T>* copyNode(Node<T>*root) const;
+
+    //----------FUNCOES LEET--------//
+    /*OK */ int treeSum(Node<T>*root);
+    /*OK */ int maxHeight(Node<T>*root);
+    /*OK */ int countLeaf(Node<T>*root);
+    /*OK */ bool findNode(Node<T>*root, const T&elem);
+    /*OK */ bool equalTrees(Node<T>*t1, Node<T>*t2);
 };
 
 template <class T>
@@ -72,26 +79,6 @@ public:
     MySetIterator operator--(int);
 
 };
-
-template <class T>
-MySetIterator<T> MySetIterator<T>::operator++(){
-    if(!ptr) return *this;
-
-    if(ptr->right){
-        ptr = ptr->right;
-        while(ptr->left)
-            ptr = ptr->left;
-    }
-    else{
-        Node<T>* aux == ptr->parent;
-        while(aux &&  ptr = aux->right){
-            ptr = aux;
-            aux = ptr->parent;
-        }
-        ptr = aux;
-    }
-    return ptr;
-}
 
 template <class T>
 MySet<T>::~MySet() {
@@ -217,4 +204,81 @@ void MySet<T>::imprimeBFS(Node<T>*root) const{
         if(current->left) q.push(current->left)
         if(current->right) q.push(current->left);
     }
+}
+
+template <class T>
+int MySet<T>:: treeSum(Node<T>*root){
+    if(!root) return 0;
+
+    int cont = root->data;
+
+    cont+= treeSum(root->left);
+    cont+=treeSum(root->right);
+
+    return cont;
+
+}
+
+
+template<class T>   // podemos implementar utilizando a BFS armazenando o nível utilizando dois while
+int MySet<T>::maxHeight(Node<T>*root){
+    if(!root) return -1;
+
+    MyQueue<std::pair<Node<T>*,int>> queue;
+    queue.push({root, 0});
+
+    int maxNivel = 0;
+
+    while(!queue.empty()){
+        std::pair<Node<T>*, int> current = queue.front();
+        queue.pop();
+
+        maxNivel = std::max(maxNivel, current->second);
+
+        if(current.first->left) 
+            queue.push({current.first->left, nivel+1});
+        if(current.first->right) 
+            queue.push({current.first->right, nivel+1});
+    }
+    return maxNivel; 
+}
+
+template<class T>
+int MySet<T>::countLeaf(Node<T>*root){
+    if(!root) return 0;
+    
+    if(!root->left && !root->right)
+        return 1;
+    
+    return countLeaf(root->left) + countLeaf(root->right);
+}
+
+
+template<class T>
+bool MySet<T>::findNode(Node<T>*root, const T&elem){
+    if(!root) return false;
+
+    if(root->data == elem)
+        return true;
+    if(findNode(root->left, elem))
+        return true;
+    if(findNode(root->right, elem))
+        return true;
+
+     return false;
+}
+
+template<class T>
+bool MySet<T>::equalTrees(Node<T>*t1, Node<T>*t2){
+    if(!t1 && !t2)          //cassos bases
+        return true;
+    else if((t1 && !t2) || (!t1 && t2)) 
+        return false;
+
+    if(t1->data == t2->data && 
+        equalTrees(t1->left, t2->left) && 
+        equalTrees(t1->right, t2->right) 
+    ) return true;
+    
+    return false;
 }
