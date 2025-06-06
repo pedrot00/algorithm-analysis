@@ -11,6 +11,7 @@ class Node;
 template <class T>
 class Node{          //nao tem tanta importancia ser tudo public pq a class so eh usada aqui
 public:
+    typedef MySetIterator<T> iterator;
     T data;
     Node<T>* left;         //valores menores (esquerda da arvore)
     Node<T>* right;        //valores maiores (direita da arvore)
@@ -20,22 +21,9 @@ public:
 };
 
 template <class T>
-class MySet{  
-private:
-    typedef MySetIterator<T> iterator;
-    Node<T>* root;          //raiz da arvore
-    int size_;
-
-    /*OK */ void imprimeDFS_in(Node<T>*root) const;
-    /*OK */ void imprimeDFS_pre(Node<T>*root) const;
-    /*OK */ void imprimeDFS_pos(Node<T>*root) const;
-    /*OK */ void imprimeBFS(Node<T>*root) const;
-    /*OK */ iterator find(const T&elem, Node<T>* root);     //metodo privado
-    /*OK */ std::pair<iterator, bool> insert(const T&elem, Node<T>*root);
-
+class MySet{ 
 public:
     typedef MySetIterator<T> iterator;
-    
     /*OK */ MySet() : size_(0), root(nullptr) {}          //construtor destrutor
     /*OK */ ~MySet();
     /*OK */ int size() const {return size_;} 
@@ -51,6 +39,21 @@ public:
 
     /*OK */ void deleteNode(Node<T>*toDelete);
     /*OK */ Node<T>* copyNode(Node<T>*root) const;
+    //-----------FUNCOES ITERADORES----------//
+
+    iterator begin();
+    iterator end(){return iterator(nullptr);}
+private:
+    
+    Node<T>* root;          //raiz da arvore
+    int size_;
+
+    /*OK */ void imprimeDFS_in(Node<T>*root) const;
+    /*OK */ void imprimeDFS_pre(Node<T>*root) const;
+    /*OK */ void imprimeDFS_pos(Node<T>*root) const;
+    /*OK */ void imprimeBFS(Node<T>*root) const;
+    /*OK */ iterator find(const T&elem, Node<T>* root);     //metodo privado
+    /*OK */ std::pair<iterator, bool> insert(const T& elem, Node<T>*& root, Node<T>* parent);
 };
 
 template <class T>
@@ -59,7 +62,9 @@ friend class MySet<T>;
 private:
     Node<T>*ptr;
 public:
-    MySetIterator(Node<T>*ptr_) : ptr(ptr_){}
+    MySetIterator(Node<T>*ptr_) : ptr(ptr_){}   //construtor com argumento
+    MySetIterator(): ptr(nullptr){}             //construtor padrao
+
     T& operator*(){ return ptr->data; }
 
     bool operator==(const MySetIterator &other)const {return ptr == other.ptr;}
@@ -74,23 +79,56 @@ public:
 };
 
 template <class T>
+MySetIterator<T> MySetIterator<T>::operator--(){
+    if(!ptr) return *this;   //derreferencia o objeto -> temos o ponteiro -> retorna o ponteiro nptr
+    
+    if(ptr->left){
+        ptr = ptr->left;
+        while(ptr->right){
+            ptr = ptr->right;
+        }
+    } else{
+        while(ptr->parent && ptr == ptr->parent->left){
+            ptr = ptr->parent;
+        }
+        ptr = ptr->parent;
+    }
+    return *this;
+}
+
+
+
+template<class T>
 MySetIterator<T> MySetIterator<T>::operator++(){
     if(!ptr) return *this;
-
+    
     if(ptr->right){
         ptr = ptr->right;
-        while(ptr->left)
+        while(ptr->left){
             ptr = ptr->left;
+        }
     }
     else{
-        Node<T>* aux == ptr->parent;
-        while(aux &&  ptr = aux->right){
-            ptr = aux;
-            aux = ptr->parent;
+        while(ptr->parent && ptr == ptr->parent->right){
+            ptr = ptr->parent;
         }
-        ptr = aux;
+        ptr = ptr->parent;
     }
-    return ptr;
+    return *this;
+}
+
+template<class T>
+MySetIterator<T> MySetIterator<T>::operator++(int){
+    MySetIterator<T> aux = *this;
+    ++(*this);
+    return aux;
+}
+
+template<class T>
+MySetIterator<T> MySetIterator<T>::operator--(int){
+    MySetIterator<T> aux = *this;
+    --(*this);
+    return aux;
 }
 
 template <class T>
@@ -100,8 +138,8 @@ MySet<T>::~MySet() {
 
 template <class T>
 void MySet<T>::deleteNode(Node<T>*toDelete){
-    if(!toDelete) return
-    deleteNode(root->left)
+    if(!toDelete) return;
+    deleteNode(root->left);
     deleteNode(root->right);
     delete toDelete;
 }
@@ -136,13 +174,14 @@ typename MySet<T>::iterator MySet<T>::find(const T&elem, Node<T>* root) {
 
 template <class T>
 std::pair<typename MySet<T>::iterator, bool>MySet<T>::insert(const T&elem){
-    return insert(elem, root);
+    return insert(elem, root, nullptr);
 }
+
 template <class T>
-std::pair<typename MySet<T>::iterator, bool> insert(const T&elem, Node<T>*&root, Node<T>*&parent){
+std::pair<typename MySet<T>::iterator, bool> MySet<T>::insert(const T& elem, Node<T>*& root, Node<T>* parent) {
     if(!root){
         root = new Node<T>(elem);
-        root->parent = parent;
+        root->parent = parent;  // Aqui está usando o parent corretamente
         size_++;
         return std::make_pair(iterator(root), true);
     }
@@ -153,6 +192,7 @@ std::pair<typename MySet<T>::iterator, bool> insert(const T&elem, Node<T>*&root,
     else
         return std::make_pair(iterator(root), false);
 }
+
 
 template<class T>
 void MySet<T>::imprimeDFS_pre() const{
@@ -171,7 +211,7 @@ void MySet<T>::imprimeDFS_pre(Node<T>*root) const{
 
 template<class T>
 void MySet<T>::imprimeDFS_pos() const{
-    imprimeDFS_pos(root)
+    imprimeDFS_pos(root);
 }
 
 template<class T>
@@ -180,7 +220,7 @@ void MySet<T>::imprimeDFS_pos(Node<T>*root) const{
 
     imprimeDFS_pos(root->left);     //left -> visita -> right
     imprimeDFS_pos(root->right);
-    std::cout<<root->data;
+    std::cout<<root->data<< " ";
 }
 
 template<class T>
@@ -193,7 +233,7 @@ void MySet<T>::imprimeDFS_in(Node<T>*root) const{
     if(!root) return;
 
     imprimeDFS_in(root->left);     //left -> visita -> right 
-    std::<<root->data;
+    std::cout<<root->data<< " ";
     imprimeDFS_in(root->right);
 }
 
@@ -209,12 +249,23 @@ void MySet<T>::imprimeBFS(Node<T>*root) const{
     q.push(root);
 
     while(!q.empty()){
-        Node<T>*curret = q.front();
+        Node<T>*current = q.front();
         q.pop();
 
-        std::cout<<current->data << " ";
+        std::cout<< current->data << " ";
 
-        if(current->left) q.push(current->left)
-        if(current->right) q.push(current->left);
+        if(current->left) q.push(current->left);
+        if(current->right) q.push(current->right);
     }
 }
+
+template <class T>
+typename MySet<T>::iterator MySet<T>::begin(){
+    if (!root) return end();
+
+    Node<T>*ptr = root;
+    while(ptr->left)
+        ptr = ptr->left;  
+    
+    return iterator(ptr);     
+} 

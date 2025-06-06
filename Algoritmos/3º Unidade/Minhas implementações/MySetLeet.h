@@ -33,6 +33,10 @@ private:
     /*OK */ iterator find(const T&elem, Node<T>* root);     //metodo privado
     /*OK */ std::pair<iterator, bool> insert(const T&elem, Node<T>*root);
 
+    //----------FUNCOES LEET--------//
+    int somaPares();
+    int contMenorElem(const T& elem);
+
 public:
     typedef MySetIterator<T> iterator;
     
@@ -58,7 +62,21 @@ public:
     /*OK */ int countLeaf(Node<T>*root);
     /*OK */ bool findNode(Node<T>*root, const T&elem);
     /*OK */ bool equalTrees(Node<T>*t1, Node<T>*t2);
+    /*OK */ void somaPares(Node<T>*root, int &cont);
+            void contMenorElem(const T& elem, Node<T>*root, int &cont);
 };
+
+template <class T>
+int contMenorElem(const T& elem){
+    int cont = 0;
+    contMenorElem(elem, cont);
+    return cont;
+}
+
+template <class T>
+void contMenorElem(const T& elem, Node<T>*root, int &cont){
+    if(!root) return;
+}
 
 template <class T>
 class MySetIterator {
@@ -282,3 +300,22 @@ bool MySet<T>::equalTrees(Node<T>*t1, Node<T>*t2){
     
     return false;
 }
+
+
+template<class T>
+int MySet<T>::somaPares(){
+    int cont = 0;
+    somaPares(root, cont);
+    return cont;
+}
+
+template<class T>
+void MySet<T>::somaPares(Node<T>*root, int &cont){
+    if (!root) return 0;
+
+    if(root->data%2 == 0)  cont++;
+    somaPares(root->left, cont);
+    somaPares(root->right, cont);
+}
+
+
