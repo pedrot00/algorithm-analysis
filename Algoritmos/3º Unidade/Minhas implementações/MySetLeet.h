@@ -67,15 +67,30 @@ public:
 };
 
 template <class T>
-int contMenorElem(const T& elem){
+int MySet<T>::contMenorElem(const T& elem){
     int cont = 0;
-    contMenorElem(elem, cont);
+    contMenorElem(elem, root, cont);
     return cont;
 }
 
 template <class T>
-void contMenorElem(const T& elem, Node<T>*root, int &cont){
-    if(!root) return;
+void MySet<T>::contMenorElem(const T& elem, Node<T>*ptr, int &cont){
+    if(!ptr) return;
+
+    if(elem < ptr->data){
+       while(elem < ptr->data){
+            if(ptr->left){
+                ptr = ptr->left;
+            }
+            else if(ptr->right){
+                ptr = ptr->right;
+            }
+            cont++
+       }
+       
+    }
+    
+        
 }
 
 template <class T>

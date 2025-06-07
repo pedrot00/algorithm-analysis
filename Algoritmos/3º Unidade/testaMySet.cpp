@@ -11,6 +11,20 @@ void insere(MySet<int> &s, int elem) {
 	cout << "Inserindo " << elem << " : " << (s.insert(elem).second) << endl;
 }
 
+template<class T>
+bool comparaArvore(const MySet<T>& tree1, const MySet<T>& tree2){
+	if(tree1.size() !=tree2.size()) 
+		return false;
+	typename MySet<T>::iterator it1 = tree1.begin();
+	typename MySet<T>::iterator it2 = tree2.begin();
+
+	for(; it1!=tree1.end() && it2 != tree2.end(); it1++, it2++){
+		if(*it1 != *it2) return false;
+	}
+	return it1 == tree1.end() && it2 == tree2.end();
+
+}
+
 
 int main() {
 	MySet<int> s;
