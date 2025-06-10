@@ -36,7 +36,7 @@ int main(){
 
     //testanto iteradores
     std::cout <<"Imprime iteradores ";
-    for(typename MySet<int>::iterator it = tree.begin(); it!= tree.end(); it++){
+    for( MySet<int>::iterator it = tree.begin(); it!= tree.end(); it++){
         std::cout << *it <<" ";
     }
 
