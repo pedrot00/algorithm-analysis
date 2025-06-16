@@ -64,6 +64,8 @@ public:
     /*OK */ bool equalTrees(Node<T>*t1, Node<T>*t2);
     /*OK */ void somaPares(Node<T>*root, int &cont);
             void contMenorElem(const T& elem, Node<T>*root, int &cont);
+        
+    //----------FUNCOES OPERADORES--------//
 };
 
 template <class T>

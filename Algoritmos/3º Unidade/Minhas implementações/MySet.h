@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <utility>
 #include <iostream>
+#include<exception>
 #include "../MyQueue.h"
 
 template <class T>
@@ -40,9 +41,11 @@ public:
     /*OK */ void deleteNode(Node<T>*toDelete);
     /*OK */ Node<T>* copyNode(Node<T>*root) const;
     //-----------FUNCOES ITERADORES----------//
-
     iterator begin();
     iterator end(){return iterator(nullptr);}
+    //----------FUNCOES OPERADORES--------//
+    T& operator[](const int n);
+
 private:
     
     Node<T>* root;          //raiz da arvore
@@ -269,3 +272,14 @@ typename MySet<T>::iterator MySet<T>::begin(){
     
     return iterator(ptr);     
 } 
+
+
+template <class T>
+T& MySet<T>::operator[](const int n){
+    if(n<0 || n>size_)  throw std::out_of_range("Erro de indice.");
+
+    MySet<T>::iterator it = begin();
+    for(int i=0; i<n; i++) it++;
+
+    return *it;
+}
