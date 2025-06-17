@@ -16,13 +16,13 @@ public:
         left(nullptr), right(nullptr) {}    //construtor folha
 
     Node(int frequencia): symbol('\0'),freq(frequencia), 
-        left(nullptr), right(nullptr){}     //construtor transbordo
+        left(nullptr), right(nullptr){}     //construtor "nao representa simbolo"
     
     Node(Node* esquerda, Node* direita, int frequencia): 
-    symbol('\0'), freq(frequencia), left(esquerda), right(direita) {} //construtor padrao
+    symbol('\0'), freq(frequencia), left(esquerda), right(direita) {} //construtor interno
 };
 
-class NodeComparator{
+class NodeComparator{   //functor auxiliar
 public:
     /*OK*/ bool operator()(Node*a, Node*b);
 };

@@ -1,8 +1,9 @@
 #include "Huffman.h"
 #include <exception>
+#include <utility>
 #include <iostream>
 
-HuffManTree:: HuffManTree(int freqs[256]){
+HuffManTree::HuffManTree(int freqs[256]){
      try{
         root = buildTree(freqs);
     } catch(std::exception &e){
@@ -46,8 +47,42 @@ void HuffManTree::destroyTree(Node* node){
     delete node;
 }
 
+Node* HuffManTree::buildTree(int freqs[256]){
+    MyPriorityQueue<Node*> queue; 
+
+    for(int i = 0; i < 256; i++){       //transf. do array elementos com freq > 0 em folha
+        if(freqs[i] > 0){
+            Node* leaf = new Node((char)i, freqs[i]);
+            queue.push(leaf);  
+        }
+    }
+    if (!queue.size()) return nullptr;
+    
+    if(queue.size() == 1){      //setta um unico no com 1 bit de profundidade
+        Node * current = queue.top();
+        queue.pop();
+        Node *root = new Node(nullptr, current, current->freq);
+        return root;
+    }
+
+    // combina todos os nos -> conecta menores -> maior elemento fica mais perto da raiz
+    while(queue.size() > 1) {
+        Node* right = queue.top(); queue.pop();
+        Node* left = queue.top(); queue.pop();
+        
+        Node* inside = new Node(left, right, left->freq + right->freq);
+        queue.push(inside);
+    } 
+    return queue.top();     //retorna a raiz ao final com a arvore ja montada
+}
+
+
+void HuffManTree::comprimir(MyVec<bool> &out, const MyVec<char> &in) const {
+    if (!root) return;
+    
+}
 
 //------------- Funcoes NodeComparator -------------//
 bool NodeComparator::operator()(Node*a, Node*b){
-    return a->freq > b->freq;
+    return a->freq < b->freq;
 }
