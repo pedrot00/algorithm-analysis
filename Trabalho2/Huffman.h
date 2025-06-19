@@ -3,48 +3,51 @@
 #include "MyPriorityQueue.h"
 #include "MyVec.h"
 
-class Node; // prev declaration para nao haver problema no node interno da classe
 
-class Node{ //atributos: simbolo, frequencia, pont. esquerda, pont. direita
+class Node {   
 public:
-    char symbol;
-    int freq;
-    Node* left;
-    Node *right;
+    char symbol;     // caracter armazenado no no folha
+    int freq;        // frequencia do caracter ou da soma  das frequencias dos filhos
+    Node* left;   
+    Node* right; 
+    bool isLeaf;     // sera utilizado para verificar se o no eh ou nao uma folha
 
-    Node(char simbolo, int frequencia): symbol(simbolo), freq(frequencia), 
-        left(nullptr), right(nullptr) {}    //construtor folha
+    Node(char simbolo, int frequencia); // construtor folha
+    Node(Node* esquerda, Node* direita, int frequencia);    // construtor no inteerno
+};
 
-    Node(int frequencia): symbol('\0'),freq(frequencia), 
-        left(nullptr), right(nullptr){}     //construtor "nao representa simbolo"
+// estrutura aux. p/ organizacao na fila de prioridade
+struct NodeInfo {       // NOTA: para manter mais legivel optei por implementar os construtores tambem no huffman.cpp
+    char symbol;     
+    int freq;        
+    bool isLeaf;     
+    Node* nodePtr;   
+
+    NodeInfo();  // construtor padrao
+    NodeInfo(char s, int f, Node* ptr); // construtor folha
+    NodeInfo(int f, Node* ptr);  // construtor node interno
     
-    Node(Node* esquerda, Node* direita, int frequencia): 
-    symbol('\0'), freq(frequencia), left(esquerda), right(direita) {} //construtor interno
+    bool operator>(const NodeInfo& other) const;    // importante para fila de prioridade
 };
 
-class NodeComparator{   //functor auxiliar
-public:
-    /*OK*/ bool operator()(Node*a, Node*b);
-};
-
-class HuffManTree{
+class HuffManTree {
 private:
-    Node* root;
-    MyVec<bool> codes[256];      //guarda codigo dos simbolos
+    Node* root;                   
+    MyVec<bool> codes[256];        // tabela de codigos 
 
-    //-------- metodos auxiliares --------//
-
-    Node* buildTree(int freqs[256]);
-    /*OK*/ void destroyTree(Node* node);
-    /*OK*/  void generateCodes( Node* node, MyVec<bool>&currentCode);   //gerador de codigos
+    Node* buildTree(int freqs[256]); // construtor 
+    void destroyTree(Node* node); // destrutor
+    void generateCodes(Node* node, MyVec<bool>& currentCode); // gera codigos que serao armazenados
 
 public:
     HuffManTree(int freqs[256]);
-    /*OK*/ ~HuffManTree();
+    ~HuffManTree();
 
-    void comprimir(MyVec<bool> &out, const MyVec<char> &in) const;
-    void descomprimir(MyVec<char> &out, const MyVec<bool> &in) const;
+    //metodos principais
+    void comprimir(MyVec<bool>& out, const MyVec<char>& in) const;
+    void descomprimir(MyVec<char>& out, const MyVec<bool>& in) const;
+    
+    void printCodes() const;
 };
-
 
 #endif
