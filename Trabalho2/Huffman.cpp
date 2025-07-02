@@ -191,17 +191,3 @@ void HuffManTree::descomprimir(MyVec<char>& out, const MyVec<bool>& in) const {
         std::cerr << "Aviso: sequencia de bits incompleta" << std::endl;
     }
 }
-
-// metodo de debug para visualizar os codigos gerados
-void HuffManTree::printCodes() const {
-    std::cout << "Codigos de Huffman:" << std::endl;
-    for(int i = 0; i < 256; i++) {
-        if(codes[i].size() > 0) {
-            std::cout << "'" << (char)i << "' (" << i << "): ";
-            for(size_t j = 0; j < codes[i].size(); j++) {
-                std::cout << (codes[i][j] ? '1' : '0');
-            }
-            std::cout << std::endl;
-        }
-    }
-}

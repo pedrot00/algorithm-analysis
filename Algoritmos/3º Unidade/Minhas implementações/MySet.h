@@ -46,6 +46,7 @@ public:
     //----------FUNCOES OPERADORES--------//
     T& operator[](const int n);
 
+
 private:
     
     Node<T>* root;          //raiz da arvore
@@ -171,8 +172,7 @@ typename MySet<T>::iterator MySet<T>::find(const T&elem, Node<T>* root) {
         return find(elem, root->left);
     if(elem > root->data)
         return find(elem, root->right);
-    else
-        return iterator(root);
+    return iterator(root);
 }
 
 template <class T>

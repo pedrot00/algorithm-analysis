@@ -47,7 +47,6 @@ public:
     void comprimir(MyVec<bool>& out, const MyVec<char>& in) const;
     void descomprimir(MyVec<char>& out, const MyVec<bool>& in) const;
     
-    void printCodes() const;
 };
 
 #endif
